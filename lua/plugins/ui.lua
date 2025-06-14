@@ -1,6 +1,7 @@
 return {
   {
     'akinsho/bufferline.nvim',
+    event = "VeryLazy",
     version = "*",
     dependencies = {
       'nvim-tree/nvim-web-devicons',
@@ -10,17 +11,17 @@ return {
       vim.opt.termguicolors = true
     end
   },
-
   -- {
   --   "lukas-reineke/indent-blankline.nvim",
+  -- event = "VeryLazy",
   --   main = "ibl",
   --   ---@module "ibl"
   --   ---@type ibl.config
   --   opts = {},
   -- },
-
   {
     "lewis6991/gitsigns.nvim",
+    event = "VeryLazy",
     opts = {
       current_line_blame = true,
       current_line_blame_opts = {
@@ -33,7 +34,13 @@ return {
       },
 	  },
   },
-
+  {
+    "RRethy/vim-illuminate",
+    event = "VeryLazy",
+    config = function()
+        require('illuminate').configure()
+    end
+  },
   {
     "goolord/alpha-nvim",
     dependencies = {

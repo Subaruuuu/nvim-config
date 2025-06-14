@@ -1,6 +1,7 @@
 return {
 	{
 		"mason-org/mason-lspconfig.nvim",
+		event = { "BufReadPost", "BufNewFile" },
 		dependencies = {
 			"mason-org/mason.nvim",
 			"neovim/nvim-lspconfig",
@@ -18,7 +19,6 @@ return {
 			-- use native "vim.lsp.config()" API or "automatic_enable" instead
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-					-- "ts_ls",
 					"lua_ls",
 					"gopls",
 					"pyright",
@@ -30,6 +30,7 @@ return {
 					"dockerls",
 					"docker_compose_language_service",
 					"bashls",
+					-- "ts_ls",
 				},
 				automatic_enable = true,
 				automatic_installation = true,

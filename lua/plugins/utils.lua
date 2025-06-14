@@ -1,5 +1,14 @@
 return {
 	{
+		"akinsho/toggleterm.nvim",
+		version = "*",
+		opts = {
+			-- direction = "horizontal",
+			direction = "float",
+			open_mapping = [[<C-\>]],
+		},
+	},
+	{
 		'rhysd/accelerated-jk',
 		config = function ()
 			vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)')
@@ -17,6 +26,7 @@ return {
 	},
 	{
 		"windwp/nvim-autopairs",
+		event = "VeryLazy",
 		opts = {
 			enable_check_bracket_line = false,
 		},
@@ -59,12 +69,14 @@ return {
 	},
 	{
 		"kamykn/spelunker.vim",
+		event = "VeryLazy",
 		config = function()
 			vim.g.spelunker_check_type = 2
 		end
 	},
 	{
 		"ellisonleao/glow.nvim",
+		event = "VeryLazy",
 		config = true,
 	},
 	{
@@ -86,36 +98,40 @@ return {
 	},
 	{
 		"folke/which-key.nvim",
+		event = "VeryLazy",
 		config = true,
 	},
 	{
 		'echasnovski/mini.ai',
+		event = "VeryLazy",
 		config = true,
 	},
 	{
 		"echasnovski/mini.comment",
+		event = "VeryLazy",
 		config = true,
 	},
 	-- 以下有需要開啟多 window split 再用
-	-- {
-	-- 	"s1n7ax/nvim-window-picker",
-	-- 	config = function()
-	-- 		require("window-picker").setup({
-	-- 			filter_rules = {
-	-- 				include_current_win = true,
-	-- 				bo = {
-	-- 					filetype = { "fidget", "neo-tree" }
-	-- 				}
-	-- 			}
-	-- 		})
-	-- 		vim.keymap.set("n",
-	-- 			"<c-w>p",
-	-- 			function()
-	-- 				local window_number = require('window-picker').pick_window()
-	-- 				if window_number then vim.api.nvim_set_current_win(window_number) end
-	-- 			end
-	-- 		)
-	-- 	end
-	-- },
+	{
+		"s1n7ax/nvim-window-picker",
+		config = function()
+			require("window-picker").setup({
+				filter_rules = {
+					include_current_win = true,
+					bo = {
+						filetype = { "fidget", "neo-tree" },
+						buftype = { 'terminal' },
+					}
+				}
+			})
+			vim.keymap.set("n",
+				"<c-w>p",
+				function()
+					local window_number = require('window-picker').pick_window()
+					if window_number then vim.api.nvim_set_current_win(window_number) end
+				end
+			)
+		end
+	},
 }
 
