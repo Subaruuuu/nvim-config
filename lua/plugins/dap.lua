@@ -34,33 +34,6 @@ return {
 				widgets.centered_float(widgets.scopes)
 			end)
 
-			local Terminal  = require('toggleterm.terminal').Terminal
-
-			vim.api.nvim_create_user_command("DebugNode", function(opts)
-				local raw = opts.args ~= "" and opts.args or "./index.js"
-
-				local node_cmd = "node --inspect " .. raw
-
-				-- Open a new toggleterm and run the command
-				local term = Terminal:new({
-					cmd = node_cmd,
-					direction = "tab",
-					close_on_exit = false,
-					start_in_insert = true,
-				})
-
-				term:toggle()
-
-				vim.defer_fn(function()
-					-- require("dap").continue()
-					require('telescope').extensions.dap.configurations({})
-				end, 1500)
-
-			end, {
-				nargs = "*", -- now supports multiple words like "--watch file.js"
-				complete = "file",
-			})
-
 			local dap, dapui = require("dap"), require("dapui")
 			require("nvim-dap-virtual-text").setup()
 			require("dapui").setup()
@@ -110,6 +83,34 @@ return {
 			local custom = require("plugins.dap.custom")
 
 			vim.api.nvim_create_user_command("DapAutoAttach", custom.auto_attach_node_process, {})
+
+			-- below attach way is deprecated, don't use it
+			local Terminal  = require('toggleterm.terminal').Terminal
+
+			vim.api.nvim_create_user_command("DebugNode", function(opts)
+				local raw = opts.args ~= "" and opts.args or "./index.js"
+
+				local node_cmd = "node --inspect " .. raw
+
+				-- Open a new toggleterm and run the command
+				local term = Terminal:new({
+					cmd = node_cmd,
+					direction = "tab",
+					close_on_exit = false,
+					start_in_insert = true,
+				})
+
+				term:toggle()
+
+				vim.defer_fn(function()
+					-- require("dap").continue()
+					require('telescope').extensions.dap.configurations({})
+				end, 1500)
+
+				end, {
+				nargs = "*", -- now supports multiple words like "--watch file.js"
+				complete = "file",
+			})
 		end
 	},
 }

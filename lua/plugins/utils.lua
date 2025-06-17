@@ -90,9 +90,9 @@ return {
 			require("neo-tree").setup()
 			vim.keymap.set({"n", "v"},"<leader>e",[[<cmd>Neotree toggle<CR>]])
 			vim.keymap.set("n", "<leader>n",
-			function()
-				vim.cmd("wincmd h")        -- move cursor to the Neotree window
-			end, { desc = "Focus Neotree" })
+				function()
+					vim.cmd("wincmd h")        -- move cursor to the Neotree window
+				end, { desc = "Focus Neotree" })
 			vim.keymap.set("n", "<leader>l", "<C-w>p", { desc = "Go to previous window" })
 		end
 	},

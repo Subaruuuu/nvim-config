@@ -32,6 +32,7 @@ return {
 			"go",
 		},
 		highlight = { enable = true },
+
 		indent = { enable = true },
 
 		textobjects = {
