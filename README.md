@@ -36,3 +36,18 @@
   ```sh
   nvim
   ```
+
+- Run `Lazy` and `mason` before playground
+  ```lua
+  :Lazy
+
+  or
+
+  :Mason
+  ```
+
+- If you want your config back
+  ```sh
+  rm -rf ~/.config/nvim
+  mv ~/.config/nvim.bak ~/.config/nvim
+  ```
