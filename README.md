@@ -51,3 +51,7 @@
   rm -rf ~/.config/nvim
   mv ~/.config/nvim.bak ~/.config/nvim
   ```
+
+## NOTE
+- For pure nvim IDE purpose, choose `main` branch
+- For "nvim + vscode" IDE purpose, choose `nvim-for-vscode` branch

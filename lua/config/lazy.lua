@@ -46,8 +46,6 @@ local plugins = {
     -- colorscheme that will be used when installing plugins.
     install = {
         colorscheme = {
-            "tokyonight",
-            -- "catppuccin",
             -- "habamax",
         }
     },
