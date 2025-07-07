@@ -40,15 +40,23 @@ buffer.fileenconding = "utf-8"
 global.mapleader = " "
 
 -- Key mappings --
-vim.keymap.set({ "n", "i", "v" }, "<Left>", "<Nop>")
-vim.keymap.set({ "n", "i", "v" }, "<Right>", "<Nop>")
-vim.keymap.set({ "n", "i", "v" }, "<Up>", "<Nop>")
-vim.keymap.set({ "n", "i", "v" }, "<Down>", "<Nop>")
+local map = vim.keymap.set
 
-vim.keymap.set("n", "<A-Tab>", "<cmd>bNext<CR>")
-vim.keymap.set("n", "<leader>bc", "<cmd>bd<CR>")
+map({ "n", "i", "v" }, "<Left>", "<Nop>")
+map({ "n", "i", "v" }, "<Right>", "<Nop>")
+map({ "n", "i", "v" }, "<Up>", "<Nop>")
+map({ "n", "i", "v" }, "<Down>", "<Nop>")
 
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+map("n", "<leader>bc", "<cmd>bd<CR>")
+map({ "v", "n" }, "<leader>y", "\"+y")
 
-vim.keymap.set({ "v", "n" }, "<leader>y", "\"+y")
+-- move up or down selected lines
+map("v", "J", ":m '>+1<CR>gv=gv")
+map("v", "K", ":m '<-2<CR>gv=gv")
+
+-- indentation adjustment
+map("v", "<Tab>", ">gv", { noremap = true, silent = true })
+map("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
+
+map("n", "<S-h>", "<cmd>bprevious<cr>")
+map("n", "<S-l>", "<cmd>bnext<cr>")
