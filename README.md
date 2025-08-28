@@ -22,7 +22,11 @@
 - Clone the starter
 
   ```sh
+  # For pure nvim IDE purpose
   git clone https://github.com/Subaruuuu/nvim-config ~/.config/nvim
+
+  # For "nvim + vscode" IDE purpose
+  git clone -b nvim-for-vscode https://github.com/Subaruuuu/nvim-config ~/.config/nvim
   ```
 
 - Remove the `.git` folder, so you can add it to your own repo later
