@@ -21,17 +21,19 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
--- Make sure to setup `mapleader` and `maplocalleader` before
--- loading lazy.nvim so that mappings are correct.
--- This is also a good place to setup other settings (vim.opt)
+-- `mapleader` is already set by `require("settings")` in init.lua, which runs first.
+
+-- Which host are we in? vscode-neovim sets `vim.g.vscode`, plain terminal nvim does not.
+-- The whole point of this branch: one config, the plugin set is picked at startup.
+--   plugins/common/ -> loaded everywhere
+--   plugins/nvim/   -> terminal Neovim only (LSP, cmp, DAP, telescope, UI chrome)
+--   plugins/vscode/ -> VSCode only
+local is_vscode = vim.g.vscode ~= nil
 
 local plugins = {
     spec = {
-        -- add LazyVim and import its plugins 打開下面這段，會載入 lazyVim 的 config
-        -- { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-
-        -- import/override with your plugins 以下載入的 plugins 會蓋掉上面的
-        { import = "plugins" },
+        { import = "plugins.common" },
+        is_vscode and { import = "plugins.vscode" } or { import = "plugins.nvim" },
     },
     defaults = {
         -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -42,14 +44,10 @@ local plugins = {
         version = false, -- always use the latest git commit
         -- version = "*", -- try installing the latest stable version for plugins that support semver
     },
-    -- Configure any other settings here. See the documentation for more details.
     -- colorscheme that will be used when installing plugins.
+    -- Under VSCode no colorscheme plugin is installed, so fall back to a builtin one.
     install = {
-        colorscheme = {
-            "tokyonight",
-            -- "catppuccin",
-            -- "habamax",
-        }
+        colorscheme = is_vscode and { "habamax" } or { "tokyonight" },
     },
 
     checker = {

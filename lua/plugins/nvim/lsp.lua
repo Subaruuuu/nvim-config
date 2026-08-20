@@ -7,12 +7,12 @@ return {
 			"mason-org/mason.nvim",
 			"neovim/nvim-lspconfig",
 			"folke/neoconf.nvim",
-			"folke/neodev.nvim",
+			"folke/lazydev.nvim",
 			"j-hui/fidget.nvim",
+			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function()
 			require("neoconf").setup()
-			require("neodev").setup()
 			require("fidget").setup()
 			require("mason").setup()
 
@@ -34,7 +34,6 @@ return {
 					-- "ts_ls",
 				},
 				automatic_enable = true,
-				automatic_installation = true,
 			})
 
 			-- Global LSP keymaps via LspAttach
@@ -48,7 +47,6 @@ return {
 					local map = vim.keymap.set
 					-- map("n", "gd", vim.lsp.buf.definition, opts "Go to definition")
 					-- map("n", "gi", vim.lsp.buf.implementation, opts "Go to implementation")
-					map("n", "gr", vim.lsp.buf.references, opts "Go to references")
 					map("n", "gd", require "telescope.builtin".lsp_definitions, opts "Go to definition")
 					map("n", "gD", vim.lsp.buf.declaration, opts "Go to declaration")
 					map("n", "gi", require "telescope.builtin".lsp_implementations, opts "Go to implementation")
@@ -57,7 +55,7 @@ return {
 					map("n", "<leader>da", require "telescope.builtin".diagnostics, opts "Diagnostics")
 					map("n", "<leader>rn", vim.lsp.buf.rename, opts "Rename")
 					map("n", "<leader>ca", vim.lsp.buf.code_action, opts "Code action")
-					map("n", "<leader>f", function()
+					map("n", "<leader>cf", function()
 						vim.lsp.buf.format { async = true }
 					end, opts "Format")
 				end,
@@ -79,12 +77,15 @@ return {
 				severity_sort = true,
 			})
 
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
+			local capabilities = vim.tbl_deep_extend("force",
+				vim.lsp.protocol.make_client_capabilities(),
+				require("cmp_nvim_lsp").default_capabilities()
+			)
 
-			-- local capabilities = vim.tbl_deep_extend("force",
-			-- 	vim.lsp.protocol.make_client_capabilities(),
-			-- 	require('cmp_nvim_lsp').default_capabilities()
-			-- )
+			-- `*` is the wildcard config every server inherits from.
+			vim.lsp.config("*", {
+				capabilities = capabilities,
+			})
 
 			vim.lsp.config("ts_ls", {
 				init_options = {
@@ -93,14 +94,25 @@ return {
 					},
 				},
 				on_init = function(client)
-					if client.supports_method "textDocument/semanticTokens" then
+					if client:supports_method("textDocument/semanticTokens") then
 						client.server_capabilities.semanticTokensProvider = nil
 					end
 				end,
-				capabilities = capabilities,
 			})
 
 			vim.lsp.enable("ts_ls")
 		end
-	}
+	},
+	{
+		-- Replaces the archived folke/neodev.nvim: teaches lua_ls about the Neovim
+		-- API and about plugins in this config. Configures itself, no setup call
+		-- in the LSP config above.
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {
+			library = {
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			},
+		},
+	},
 }

@@ -1,40 +1,34 @@
+-- Settings shared by every host (terminal Neovim and VSCode + vscode-neovim).
+-- Host-specific options and keymaps live in `settings/nvim.lua` / `settings/vscode.lua`,
+-- which this file dispatches to at the bottom.
+
 local option = vim.opt
-local buffer = vim.b
 local global = vim.g
 
--- Globol Settings --
-option.showmode = false
-option.backspace = { "indent", "eol", "start" }
+-- Indentation --
 option.tabstop = 4
 option.shiftwidth = 4
 option.expandtab = true
 option.shiftround = true
 option.autoindent = true
 option.smartindent = true
-option.number = true
-option.relativenumber = true
-option.wildmenu = true
+
+-- Search --
 option.hlsearch = false
 option.ignorecase = true
 option.smartcase = true
-option.completeopt = { "menuone", "noselect" }
-option.cursorline = true
-option.termguicolors = true
-option.signcolumn = "yes"
-option.autoread = true
-option.title = true
+
+-- Files & history --
+option.fileencoding = "utf-8"
 option.swapfile = false
 option.backup = false
-option.updatetime = 50
-option.mouse = "a"
 option.undofile = true
 option.undodir = vim.fn.expand('$HOME/.local/share/nvim/undo')
-option.exrc = true
-option.wrap = true
-option.splitright = true
+option.autoread = true
+option.updatetime = 50
 
--- Buffer Settings --
-buffer.fileenconding = "utf-8"
+-- Editing --
+option.backspace = { "indent", "eol", "start" }
 
 -- Global Settings --
 global.mapleader = " "
@@ -42,12 +36,13 @@ global.mapleader = " "
 -- Key mappings --
 local map = vim.keymap.set
 
+-- force to cancel arrows key
 map({ "n", "i", "v" }, "<Left>", "<Nop>")
 map({ "n", "i", "v" }, "<Right>", "<Nop>")
 map({ "n", "i", "v" }, "<Up>", "<Nop>")
 map({ "n", "i", "v" }, "<Down>", "<Nop>")
 
-map("n", "<leader>bc", "<cmd>bd<CR>")
+-- copy to the clipboard
 map({ "v", "n" }, "<leader>y", "\"+y")
 
 -- move up or down selected lines
@@ -58,5 +53,5 @@ map("v", "K", ":m '<-2<CR>gv=gv")
 map("v", "<Tab>", ">gv", { noremap = true, silent = true })
 map("v", "<S-Tab>", "<gv", { noremap = true, silent = true })
 
-map("n", "<S-h>", "<cmd>bprevious<cr>")
-map("n", "<S-l>", "<cmd>bnext<cr>")
+-- Host-specific settings --
+require(vim.g.vscode and "settings.vscode" or "settings.nvim")
