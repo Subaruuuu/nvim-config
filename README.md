@@ -57,5 +57,26 @@
   ```
 
 ## NOTE
-- For pure nvim IDE purpose, choose `main` branch
-- For "nvim + vscode" IDE purpose, choose `nvim-for-vscode` branch
+
+This branch (`unified`) detects its host at startup and loads the right plugin set on
+its own -- no branch switching required.
+
+| | terminal `nvim` | VSCode + [vscode-neovim](https://github.com/vscode-neovim/vscode-neovim) |
+|---|---|---|
+| detected by | `vim.g.vscode == nil` | `vim.g.vscode` is set |
+| plugins | `lua/plugins/common/` + `lua/plugins/nvim/` | `lua/plugins/common/` + `lua/plugins/vscode/` |
+| settings | `lua/settings/init.lua` + `nvim.lua` | `lua/settings/init.lua` + `vscode.lua` |
+
+Where to add things:
+
+- **both hosts** -> `lua/plugins/common/` (flash, treesitter, accelerated-jk, mini.*)
+- **terminal only** -> `lua/plugins/nvim/` (LSP, cmp, DAP, telescope, statusline, neo-tree, ...)
+- **VSCode only** -> `lua/plugins/vscode/`
+
+Note that lazy.nvim's `import` only picks up `*.lua` directly inside the imported
+directory plus subdirectories that contain an `init.lua`. That is why
+`lua/plugins/nvim/dap/custom.lua` is a plain helper module and not treated as a
+plugin spec -- don't add an `init.lua` next to it.
+
+The older `main` (terminal only) and `nvim-for-vscode` (VSCode only) branches are kept
+for reference.

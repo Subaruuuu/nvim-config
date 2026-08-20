@@ -1,4 +1,36 @@
 return {
+  -- editor 下方的狀態欄
+    {
+        "nvim-lualine/lualine.nvim",
+        lazy = false,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons"
+        },
+        opts = {
+            -- NOTE: lualine reads the theme from `options.theme`. A top-level
+            -- `theme` key is silently ignored.
+            options = {
+                theme = "tokyonight",
+                -- theme = "catppuccin",
+            },
+        },
+    },
+
+  -- editor 上方檔案的 directory 順序
+    {
+        "utilyre/barbecue.nvim",
+        name = "barbecue",
+        version = "*",
+        dependencies = {
+            "SmiteshP/nvim-navic",
+            "nvim-tree/nvim-web-devicons",
+        },
+        opts = {
+            theme = "tokyonight",
+            -- theme = "catppuccin",
+        },
+    },
+
     {
         'akinsho/bufferline.nvim',
         event = "VeryLazy",
@@ -46,7 +78,6 @@ return {
         dependencies = {
             -- 'echasnovski/mini.icons',
             'nvim-tree/nvim-web-devicons',
-            'kyazdani42/nvim-web-devicons',
         },
         config = function ()
             local status_ok, alpha = pcall(require, "alpha")
@@ -55,11 +86,7 @@ return {
                 return
             end
 
-            if vim.fn.has("win32") == 1 then
-                plugins_count = vim.fn.len(vim.fn.globpath("~/AppData/Local/nvim-data/site/pack/packer/start", "*", 0, 1))
-            else
-                plugins_count = vim.fn.len(vim.fn.globpath("~/.local/share/nvim/site/pack/packer/start", "*", 0, 1))
-            end
+            local plugins_count = require("lazy").stats().count
 
             local dashboard = require("alpha.themes.dashboard")
 
@@ -97,14 +124,13 @@ return {
             }
 
             dashboard.section.buttons.val = {
-                dashboard.button("p", "  Find project", ":Telescope projects <CR>"),
                 dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
                 dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
                 dashboard.button("t", "  Find text", ":Telescope live_grep <CR>"),
                 dashboard.button("m", "  BookMarks", ":Telescope marks <CR>"),
-                dashboard.button("e", "  Extensions ", ":e ~/.config/nvim/lua/VisualStudioNeovim/Core/plugins.lua<CR>"),
+                dashboard.button("e", "  Extensions ", ":e ~/.config/nvim/lua/plugins<CR>"),
                 dashboard.button("r", "  Recently used files", ":Telescope oldfiles <CR>"),
-                dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/VisualStudioNeovim/Core/options.lua<CR>"),
+                dashboard.button("c", "  Configuration", ":e ~/.config/nvim/lua/settings/init.lua<CR>"),
                 dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
             }
 

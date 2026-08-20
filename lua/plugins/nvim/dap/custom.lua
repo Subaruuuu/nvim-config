@@ -16,7 +16,7 @@ M.auto_attach_node_process = function()
 					if pid then
 						vim.schedule(function()
 							require("dap").run({
-								type = "node2",
+								type = "pwa-node",
 								name = "Auto Attach (found process)",
 								request = "attach",
 								processId = tonumber(pid),

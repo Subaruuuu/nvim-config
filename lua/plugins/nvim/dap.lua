@@ -7,15 +7,24 @@ return {
 			"theHamsta/nvim-dap-virtual-text",
 			"nvim-neotest/nvim-nio",
 			"nvim-telescope/telescope-dap.nvim",
+			{
+				-- mason-lspconfig only ensures LSP servers; DAP adapters need this.
+				-- `handlers` is deliberately omitted so this plugin installs the
+				-- adapter but does NOT define any dap.adapters/configurations --
+				-- those are spelled out explicitly below.
+				"jay-babu/mason-nvim-dap.nvim",
+				dependencies = { "mason-org/mason.nvim" },
+				opts = { ensure_installed = { "js" } }, -- "js" -> js-debug-adapter
+			},
 		},
 		config = function()
 			vim.keymap.set('n', '<F5>', function() require 'telescope'.extensions.dap.configurations {} end)
 			vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
 			vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
 			vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
-			vim.keymap.set('n', '<Leader>b', function() require('dap').toggle_breakpoint() end)
-			vim.keymap.set('n', '<Leader>B', function() require('dap').set_breakpoint() end)
-			vim.keymap.set('n', '<Leader>lp',
+			vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end)
+			vim.keymap.set('n', '<Leader>dB', function() require('dap').set_breakpoint() end)
+			vim.keymap.set('n', '<Leader>dL',
 				function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
 			vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
 			vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end)
@@ -38,7 +47,7 @@ return {
 			require("nvim-dap-virtual-text").setup()
 			require("dapui").setup()
 
-			dap.set_log_level("TRACE")
+			-- dap.set_log_level("TRACE")
 
 			dap.listeners.after.event_initialized["dapui_config"] = function()
 				dapui.open()
@@ -58,29 +67,50 @@ return {
 			vim.fn.sign_define("DapConditionalBreakpoint", { text = "🟡", texthl = "", linehl = "", numhl = "" })
 			vim.fn.sign_define("DapStopped", { text = "🟢", texthl = "", linehl = "", numhl = "" })
 
-			dap.adapters.node2 = {
-				type = "executable",
-				command = "node",
-				args = {
-					vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js",
+			-- vscode-js-debug, installed by mason as "js-debug-adapter".
+			-- Replaces node-debug2-adapter: Microsoft archived it and mason removed
+			-- it from the registry in v1.43.0, so it cannot be installed at all on a
+			-- new machine. The adapter is a server, not an executable -- nvim-dap
+			-- fills in ${port} and js-debug listens on it.
+			dap.adapters["pwa-node"] = {
+				type = "server",
+				host = "localhost",
+				port = "${port}",
+				executable = {
+					command = vim.fn.stdpath("data") .. "/mason/bin/js-debug-adapter",
+					args = { "${port}" },
 				},
 			}
 
 			for _, language in ipairs {
-				-- "typescript",
 				"javascript",
+				"typescript",
+				"javascriptreact",
+				"typescriptreact",
 			} do
 				dap.configurations[language] = {
 					{
-						type = "node2",
-						name = 'Attach to process (node2)',
+						type = "pwa-node",
+						name = "Launch file",
+						request = "launch",
+						program = "${file}",
+						cwd = "${workspaceFolder}",
+						sourceMaps = true,
+						skipFiles = { "<node_internals>/**" },
+					},
+					{
+						type = "pwa-node",
+						name = "Attach to process",
 						request = "attach",
 						processId = require('dap.utils').pick_process,
+						cwd = "${workspaceFolder}",
+						sourceMaps = true,
+						skipFiles = { "<node_internals>/**" },
 					},
 				}
 			end
 
-			local custom = require("plugins.dap.custom")
+			local custom = require("plugins.nvim.dap.custom")
 
 			vim.api.nvim_create_user_command("DapAutoAttach", custom.auto_attach_node_process, {})
 
